@@ -10,6 +10,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -25,16 +26,13 @@ public class RetrofitNetwork
     private TaskService taskService;
 
 
-    public RetrofitNetwork()
-    {
+    public RetrofitNetwork() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl( "http://192.168.100.118:8080/" ) //localhost for emulator
             .addConverterFactory( GsonConverterFactory.create() ).build();
 
 
         authService = retrofit.create( AuthService.class );
         taskService = retrofit.create( TaskService.class );
-        Call<List<Task>> taskList = taskService.listTasks();
-        System.out.println(taskList);
     }
 
     public RetrofitNetwork( final String token )
