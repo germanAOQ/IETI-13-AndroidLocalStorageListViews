@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/IETI-13-AndroidLocalStorageListViews.iml" filepath="$PROJECT_DIR$/.idea/modules/IETI-13-AndroidLocalStorageListViews.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/IETI-13-AndroidLocalStorageListViews.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/IETI-13-AndroidLocalStorageListViews.app.iml" />
+    </modules>
+  </component>
+</project>
