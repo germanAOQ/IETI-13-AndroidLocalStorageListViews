@@ -1,15 +1,23 @@
 package co.edu.eci.ieti.android.network.data;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Fts4;
+import androidx.room.PrimaryKey;
+
 /**
  * @author Santiago Carrillo
  * 4/23/19.
  */
+
+@Entity
 public class LoginWrapper
 {
+    @PrimaryKey
+    @NonNull
+    public final String email;
 
-    final String email;
-
-    final String password;
+    public final String password;
 
     public LoginWrapper( String email, String password )
     {

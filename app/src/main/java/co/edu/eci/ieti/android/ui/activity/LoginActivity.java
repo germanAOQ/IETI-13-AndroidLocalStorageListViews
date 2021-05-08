@@ -6,8 +6,10 @@ import android.view.View;
 import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import co.edu.eci.ieti.R;
+import co.edu.eci.ieti.android.database.AppDatabase;
 import co.edu.eci.ieti.android.network.RetrofitNetwork;
 import co.edu.eci.ieti.android.network.data.LoginWrapper;
+import co.edu.eci.ieti.android.network.data.Task;
 import co.edu.eci.ieti.android.network.data.Token;
 import co.edu.eci.ieti.android.storage.Storage;
 import co.edu.eci.ieti.android.ui.utils.StringUtils;
@@ -16,6 +18,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -33,6 +36,8 @@ public class LoginActivity
 
     private EditText password;
 
+    private AppDatabase appDatabase;
+
     @Override
     protected void onCreate( Bundle savedInstanceState )
     {
@@ -41,6 +46,7 @@ public class LoginActivity
         storage = new Storage( this );
         email = findViewById( R.id.email );
         password = findViewById( R.id.password );
+        appDatabase = AppDatabase.getInstance(this);
     }
 
 
@@ -63,7 +69,15 @@ public class LoginActivity
                         if ( response.isSuccessful() )
                         {
                             Token token = response.body();
+                            System.out.println("Este es el token: "+token.getAccessToken());
                             storage.saveToken( token );
+                            RetrofitNetwork retrofitNetwork1 = new RetrofitNetwork(token.getAccessToken());
+                            Call<List<Task>> listCall = retrofitNetwork1.getTaskService().listTasks();
+                            Response<List<Task>> listResponse = listCall.execute();
+                            System.out.println("Está es la lista de tareas "+listResponse.body());
+                            for(Task t: listResponse.body()){
+                                appDatabase.taskDAO().insertTask(t);
+                            }
                             startActivity( new Intent( LoginActivity.this, MainActivity.class ) );
                             finish();
                         }

@@ -1,5 +1,7 @@
 package co.edu.eci.ieti.android.network;
 
+import android.content.Context;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -10,7 +12,6 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -32,7 +33,6 @@ public class RetrofitNetwork
 
 
         authService = retrofit.create( AuthService.class );
-        taskService = retrofit.create( TaskService.class );
     }
 
     public RetrofitNetwork( final String token )
@@ -54,9 +54,9 @@ public class RetrofitNetwork
             }
         } );
         Retrofit retrofitList =
-                new Retrofit.Builder().baseUrl( BASE_URL ).addConverterFactory( GsonConverterFactory.create() ).client(
+                new Retrofit.Builder().baseUrl( "http://192.168.100.118:8080/api/" ).addConverterFactory( GsonConverterFactory.create() ).client(
                         httpClient.build() ).build();
-
+        taskService = retrofitList.create( TaskService.class );
     }
 
     public AuthService getAuthService()

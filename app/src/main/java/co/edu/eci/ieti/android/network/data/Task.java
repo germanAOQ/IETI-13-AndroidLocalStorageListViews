@@ -1,7 +1,14 @@
 package co.edu.eci.ieti.android.network.data;
 
+import androidx.room.Entity;
+import androidx.room.Fts4;
+import androidx.room.PrimaryKey;
+
+@Entity
 public class Task {
+    @PrimaryKey
     private int id;
+
     private String title;
     private String status;
     private String dueDate;
