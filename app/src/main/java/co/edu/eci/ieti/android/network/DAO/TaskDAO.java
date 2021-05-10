@@ -13,4 +13,7 @@ public interface TaskDAO {
 
     @Query("SELECT * FROM task")
     public Task[] loadAllTasks();
+
+    @Query("DELETE FROM task")
+    public void deleteAll();
 }

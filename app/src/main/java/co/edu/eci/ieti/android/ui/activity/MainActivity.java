@@ -10,11 +10,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import co.edu.eci.ieti.R;
+import co.edu.eci.ieti.android.database.AppDatabase;
+import co.edu.eci.ieti.android.network.RetrofitNetwork;
+import co.edu.eci.ieti.android.network.adapter.TasksAdapter;
+import co.edu.eci.ieti.android.network.data.Task;
 import co.edu.eci.ieti.android.storage.Storage;
+import retrofit2.Call;
+import retrofit2.Response;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class MainActivity
     extends AppCompatActivity
@@ -24,12 +42,56 @@ public class MainActivity
 
     private Storage storage;
 
+    private RecyclerView recyclerView;
+
+    private TasksAdapter tasksAdapter;
+
+    private AppDatabase appDatabase;
+
     @Override
     protected void onCreate( Bundle savedInstanceState )
     {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_main );
         storage = new Storage( this );
+        appDatabase = AppDatabase.getInstance(this);
+
+        Callable<Task[]> callable = new Callable<Task[]>() {
+            @Override
+            public Task[] call() throws Exception {
+                return appDatabase.taskDAO().loadAllTasks();
+            }
+        };
+
+        Future<Task[]> future = Executors.newSingleThreadExecutor().submit(callable);
+        Task[] taskList = new Task[0];
+        try {
+            taskList = future.get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //Datos para poblar RecyclerView con DB
+        ArrayList<Task> taskArrayList = new ArrayList<Task>();
+        Task task1 = new Task(1,"Task 1","5","2021-05-10","Sin responsable");
+        Task task2 = new Task(1,"Task 2","4","2021-05-10","Sin responsable");
+        Task task3 = new Task(1,"Task 3","2","2021-05-10","Sin responsable");
+        taskArrayList.add(task1);
+        taskArrayList.add(task2);
+        taskArrayList.add(task3);
+        for(Task task: taskList){
+            System.out.println("Esta es una tarea recuperada de la base de datos: "+task.getTitle());
+            taskArrayList.add(task);
+        }
+
+        //Configurar RecyclerView
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        tasksAdapter = new TasksAdapter();
+        tasksAdapter.updateTasks(taskArrayList);
+        recyclerView.setAdapter(tasksAdapter);
+
         Toolbar toolbar = findViewById( R.id.toolbar );
         setSupportActionBar( toolbar );
 

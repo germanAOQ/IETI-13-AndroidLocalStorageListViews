@@ -75,8 +75,16 @@ public class LoginActivity
                             Call<List<Task>> listCall = retrofitNetwork1.getTaskService().listTasks();
                             Response<List<Task>> listResponse = listCall.execute();
                             System.out.println("Está es la lista de tareas "+listResponse.body());
+                            for(Task task: listResponse.body()){
+                                System.out.println(task.getId());
+                            }
+                            appDatabase.taskDAO().deleteAll();
                             for(Task t: listResponse.body()){
                                 appDatabase.taskDAO().insertTask(t);
+                            }
+                            System.out.println("Lista de tareas de la base de datos: ");
+                            for(Task t: appDatabase.taskDAO().loadAllTasks()){
+                                System.out.println(t.getTitle());
                             }
                             startActivity( new Intent( LoginActivity.this, MainActivity.class ) );
                             finish();
